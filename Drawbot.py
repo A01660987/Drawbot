@@ -2,13 +2,15 @@ import tkinter as tk
 from math import trunc
 import re
 
+# se implementa el parser utilizando el método de descenso recursivo
+
 def sigToken():
     global t
     t += 1
     if t < len(entrada):
         return entrada[t]
     else:
-        raise Exception("Fin de línea inesperado después de " + entrada[t-1] + ".")
+        raise Exception("Error: Fin de línea inesperado después de " + entrada[t-1] + ".")
 
 def parse_int():
     if token.isdigit():
@@ -20,9 +22,9 @@ def comando():
     if parse_adelante() or parse_atras() or parse_izquierda() or parse_derecha() or parse_levantar() or parse_bajar() or parse_color() or parse_limpiar() or parse_centro() or parse_repetir() or parse_script():
         return True
     elif t == 0:
-        raise Exception("Se esperaba comando.")
+        raise Exception("Error: Se esperaba comando.")
     else:
-        raise Exception("Se esperaba comando después de: " + entrada[t-1] + ".")
+        raise Exception("Error: Se esperaba comando después de: " + entrada[t-1] + ".")
     
 def bucle(n, t_inicio, i):
     global token, t
@@ -38,7 +40,7 @@ def bucle(n, t_inicio, i):
         token = sigToken()
         bucle(n, t_inicio, i)
     else:
-        raise Exception("Se esperaba comando o ')' después de: " + entrada[t-1] + ".")
+        raise Exception("Error: Se esperaba comando o ')' después de: " + entrada[t-1] + ".")
     
 def parse_adelante():
     global token
@@ -48,7 +50,7 @@ def parse_adelante():
             adelante(int(token))
             return True
         else:
-            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
+            raise Exception("Error: Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
     
@@ -60,7 +62,7 @@ def parse_atras():
             atras(int(token))
             return True
         else:
-            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
+            raise Exception("Error: Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
     
@@ -104,7 +106,7 @@ def parse_color():
             set_color(token)
             return True
         else:
-            raise Exception("Se esperaba código hexadecimal de color (#nnnnnn) después de: " + entrada[t-1] + ".")
+            raise Exception("Error: Se esperaba código hexadecimal de color (#nnnnnn) después de: " + entrada[t-1] + ".")
     else:
         return False
     
@@ -136,9 +138,9 @@ def parse_repetir():
                 bucle(n, t, 0)
                 return True
             else:
-                raise Exception("Se esperaba '(' después de: " + entrada[t-1] + ".")
+                raise Exception("Error: Se esperaba '(' después de: " + entrada[t-1] + ".")
         else:
-            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
+            raise Exception("Error: Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
 
@@ -150,30 +152,34 @@ def parse_script():
             script(token)
             return True
         else:
-            raise Exception("Se esperaba nombre de archivo entre comillas después de: " + entrada[t-1] + ".")
+            raise Exception("Error: Se esperaba nombre de archivo entre comillas después de: " + entrada[t-1] + ".")
     else:
         return False
 
 ventana = tk.Tk()
 ventana.title("Drawbot")
 
-tamaño_pantalla = 500       # default: 500
-num_celdas = 25             # default: 25
-celda = (tamaño_pantalla/num_celdas)
+# se definen los parámetros iniciales
 
-angulo = 90
-pluma_abajo = True
-color = "#000000"
+tamaño_pantalla = 500                   # default: 500
+num_celdas = 25                         # default: 25
+celda = (tamaño_pantalla/num_celdas)    # default: 500/25 = 20
+
+angulo = 90                             # default: 90
+pluma_abajo = True                      # default: True
+color = "#000000"                       # default: "#000000"
 
 canvas = tk.Canvas(ventana, width=tamaño_pantalla, height=tamaño_pantalla, bg="white")
 canvas.pack()
 
-for i in range(1, num_celdas):      # se dibuja la cuadrícula
+for i in range(1, num_celdas):          # se dibuja la cuadrícula
     canvas.create_line(i*celda, 0, i*celda, tamaño_pantalla, fill="#e3e3e3")
     canvas.create_line(0, i*celda, tamaño_pantalla, i*celda, fill="#e3e3e3")
 
 x = trunc(num_celdas/2)*celda
 y = x
+
+# se definen las funciones que rigen el comportamiento de Drawbot
 
 def adelante(casillas):
     global x, y, dibujo, dibujos
@@ -265,7 +271,10 @@ def centro():
 def script(nombre):
     global entrada, t, token
     nombre = re.sub(r'"', "", nombre)
-    archivo = open(nombre, 'r')
+    try:
+        archivo = open(nombre, 'r')
+    except:
+        raise Exception("Error: El archivo especificado no existe.")
     lineas = archivo.readlines()
     for linea in lineas:
         global entrada, t, token, display
@@ -292,15 +301,15 @@ def render():
 def recibirInput(event):
     global entrada, t, token, display
     input = cajaInput.get()
-    input = re.sub(r"\(", "( ", input)
+    input = re.sub(r"\(", "( ", input)      # se añaden espacios entre los paréntesis para separar los tokens correctamente
     input = re.sub(r"\)", " )", input)
     entrada = re.split(r"\s+", input)
     t = 0
     token = entrada[t]
     try:
         comando()
-        display.set(input)
-    except Exception as error:
+        display.set(input)                  # si el comando ingresado fue correcto, se muestra en pantalla
+    except Exception as error:              # si hubo un error, este se muestra
         display.set(error)
     cajaInput.delete(0, tk.END)
 
@@ -316,21 +325,3 @@ mensaje.pack()
 drawbot = canvas.create_polygon(x+celda/2, y, x+celda, y+celda, x+celda/2, y+2*celda/3, x, y+celda, fill=color)
 dibujos = []
 ventana.mainloop()
-
-
-# <programa> ::= <comando> {"\n" <comando>}
-# <int> ::= (0 | 1 | 2 | 3 | 4 | 5| 6 | 7 | 8 | 9)*;
-# <hex> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
-# <comando> ::= <adelante> | <atras> | <izquierda> | <derecha> | <levantar> | <bajar> | <color> | <limpiar> | <centro> | <repetir> | <script>;
-# <bucle> ::= 
-# <adelante> ::= "adelante " <int>;
-# <atras> ::= "atras " <int>;
-# <izquierda> ::= "izquierda";
-# <derecha> ::= "derecha";
-# <levantar> ::= "levantar";
-# <bajar> ::= "bajar";
-# <color>  ::= "color " '#' <hex> <hex> <hex> <hex> <hex> <hex>;
-# <limpiar> ::= "limpiar";
-# <centro> ::= "centro";
-# <repetir> ::= “repetir ” <int> '(' <comando> {<comando>} ')';
-# <script> ::= "script " '"' {.} '"';
