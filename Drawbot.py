@@ -152,7 +152,7 @@ def parse_script():
     global token
     if re.match(r"script", token):
         token = sigToken()
-        if re.match(r"\".*\"", token):
+        if re.match(r'\"(.|\s)*', token):
             script(token)
             return True
         else:
