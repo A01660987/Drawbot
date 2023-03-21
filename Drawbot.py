@@ -1,3 +1,7 @@
+# Drawbot: un lenguaje de programación de dominio específico para dibujar, implementado en Python utilizando tkinter.
+# Creado por Diego Andrés Figueroa Peart, matrícula A01660987.
+# Materia: IMECO, 4to semestre de Ingeniería en Tecnologías Computacionales, Tecnológico de Monterrey.
+
 import tkinter as tk
 from math import trunc
 import re
