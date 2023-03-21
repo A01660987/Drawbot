@@ -8,133 +8,160 @@ def sigToken():
     if t < len(entrada):
         return entrada[t]
     else:
-        error
-    return entrada[t]
+        raise Exception("Fin de línea inesperado después de " + entrada[t-1] + ".")
 
-def int():
+def parse_int():
     if token.isdigit():
         return True
     else:
         return False
 
 def comando():
-    if adelante() or atras() or izquierda() or derecha() or levantar() or bajar() or color() or limpiar() or centro() or repetir() or script():
+    if parse_adelante() or parse_atras() or parse_izquierda() or parse_derecha() or parse_levantar() or parse_bajar() or parse_color() or parse_limpiar() or parse_centro() or parse_repetir() or parse_script():
         return True
+    elif t == 0:
+        raise Exception("Se esperaba comando.")
     else:
-        return False
+        raise Exception("Se esperaba comando después de: " + entrada[t-1] + ".")
     
-def adelante():
+def bucle(n, t_inicio, i):
+    global token, t
+    if re.match(r"\)", token):
+        i += 1
+        if i == n:
+            return True
+        else:
+            t = t_inicio - 1
+            token = sigToken()
+            bucle(n, t_inicio, i)
+    elif t < len(entrada) and comando():
+        token = sigToken()
+        bucle(n, t_inicio, i)
+    else:
+        raise Exception("Se esperaba comando o ')' después de: " + entrada[t-1] + ".")
+    
+def parse_adelante():
     global token
     if re.match(r"adelante", token):
         token = sigToken()
-        if int():
+        if parse_int():
+            adelante(int(token))
             return True
         else:
-            return False
+            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
     
-def atras():
+def parse_atras():
     global token
     if re.match(r"atras", token):
         token = sigToken()
-        if int():
+        if parse_int():
+            atras(int(token))
             return True
         else:
-            return False
+            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
     
-def izquierda():
+def parse_izquierda():
     global token
     if re.match(r"izquierda", token):
+        rotar(90)
         return True
     else:
         return False
     
-def derecha():
+def parse_derecha():
     global token
     if re.match(r"derecha", token):
+        rotar(-90)
         return True
     else:
         return False
     
-def levantar():
+def parse_levantar():
     global token
     if re.match(r"levantar", token):
+        pluma(False)
         return True
     else:
         return False
     
-def bajar():
+def parse_bajar():
     global token
     if re.match(r"bajar", token):
+        pluma(True)
         return True
     else:
         return False
     
-def color():
+def parse_color():
     global token
     if re.match(r"color", token):
         token = sigToken()
         if re.match(r"#[0-9a-fA-F]{6}", token):
+            set_color(token)
             return True
         else:
-            return False
+            raise Exception("Se esperaba código hexadecimal de color (#nnnnnn) después de: " + entrada[t-1] + ".")
     else:
         return False
     
-def limpiar():
+def parse_limpiar():
     global token
     if re.match(r"limpiar", token):
+        limpiar()
         return True
     else:
         return False
     
-def centro():
+def parse_centro():
     global token
     if re.match(r"centro", token):
+        centro()
         return True
     else:
         return False
     
-def repetir():
+def parse_repetir():
     global token
     if re.match(r"repetir", token):
         token = sigToken()
-        if int():
+        if parse_int():
+            n = int(token)
             token = sigToken()
-            if comando():
-                while t < len(entrada)-1:
-                    token = sigToken()
-                    if not comando():
-                        return False
+            if re.match(r"\(", token):
+                token = sigToken()
+                bucle(n, t, 0)
                 return True
             else:
-                return False
+                raise Exception("Se esperaba '(' después de: " + entrada[t-1] + ".")
         else:
-            return False
+            raise Exception("Se esperaba int después de: " + entrada[t-1] + ".")
     else:
         return False
-    
-def script():
+
+def parse_script():
     global token
     if re.match(r"script", token):
         token = sigToken()
         if re.match(r"\".*\"", token):
+            script(token)
             return True
         else:
-            return False
+            raise Exception("Se esperaba nombre de archivo entre comillas después de: " + entrada[t-1] + ".")
     else:
         return False
 
 ventana = tk.Tk()
-ventana.title("DrawbotTK")
+ventana.title("Drawbot")
 
 tamaño_pantalla = 500       # default: 500
 num_celdas = 25             # default: 25
 celda = (tamaño_pantalla/num_celdas)
-angulo = 0
+
+angulo = 90
 pluma_abajo = True
 color = "#000000"
 
@@ -148,39 +175,133 @@ for i in range(1, num_celdas):      # se dibuja la cuadrícula
 x = trunc(num_celdas/2)*celda
 y = x
 
-def funcAdelante(casillas, angulo, x, y):
+def adelante(casillas):
+    global x, y, dibujo, dibujos
     i = 0
-    while i < casillas and x in range(0, trunc(tamaño_pantalla-celda)) and y in range(0, trunc(tamaño_pantalla-celda)):
-        if angulo == 0:
+    while i < casillas:
+        if angulo == 0 and x < trunc(tamaño_pantalla-celda):
             x += celda
-        elif angulo == 90:
-            y += celda
-        elif angulo == 180:
-            x -= celda
-        elif angulo == 270:
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x-celda+celda/2, y+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 90 and y > 0:
             y -= celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda/2, y+celda+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 180 and x > 0:
+            x -= celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda+celda/2, y+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 270 and y < trunc(tamaño_pantalla-celda):
+            y += celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda/2, y-celda+celda/2, fill=color)
+                dibujos.append(dibujo)
         i += 1
-        return x, y
+    render()
 
+def atras(casillas):
+    global x, y
+    i = 0
+    while i < casillas:
+        if angulo == 0 and x < trunc(tamaño_pantalla-celda):
+            x -= celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda+celda/2, y+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 90 and y > 0:
+            y += celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda/2, y-celda+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 180 and x > 0:
+            x += celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x-celda+celda/2, y+celda/2, fill=color)
+                dibujos.append(dibujo)
+        elif angulo == 270 and y < trunc(tamaño_pantalla-celda):
+            y -= celda
+            if pluma_abajo:
+                dibujo = canvas.create_line(x+celda/2, y+celda/2, x+celda/2, y+celda+celda/2, fill=color)
+                dibujos.append(dibujo)
+        i += 1
+    render()
 
-def render(x, y):
+def rotar(grados):
+    global angulo
+    angulo += grados
+    if angulo == 360:
+        angulo = 0
+    elif angulo == -90:
+        angulo = 270
+    render()
+
+def pluma(bool):
+    global pluma_abajo
+    pluma_abajo = bool
+
+def set_color(hex):
+    global color
+    color = hex
+    render()
+
+def limpiar():
+    global dibujo, dibujos
+    try:
+        for i in dibujos:
+            canvas.delete(i)
+    except:
+        pass
+    
+def centro():
+    global x, y, angulo
+    x = trunc(num_celdas/2)*celda
+    y = x
+    angulo = 90
+    render()
+
+def script(nombre):
+    global entrada, t, token
+    nombre = re.sub(r'"', "", nombre)
+    archivo = open(nombre, 'r')
+    lineas = archivo.readlines()
+    for linea in lineas:
+        global entrada, t, token, display
+        input = linea
+        input = re.sub(r"\(", "( ", input)
+        input = re.sub(r"\)", " )", input)
+        entrada = re.split(r"\s+", input)
+        t = 0
+        token = entrada[t]
+        comando()
+    
+def render():
+    global x, y, drawbot
+    canvas.delete(drawbot)
     if angulo == 0:
-        canvas.create_polygon(x, y, x+celda, y+celda/2, x, y+celda, x+celda/3, y+celda/2, fill=color)
+        drawbot = canvas.create_polygon(x, y, x+celda, y+celda/2, x, y+celda, x+celda/3, y+celda/2, fill=color)
     elif angulo == 90:
-        canvas.create_polygon(x+celda/2, y, x+celda, y+celda, x+celda/2, y+2*celda/3, x, y+celda, fill=color)
+        drawbot = canvas.create_polygon(x+celda/2, y, x+celda, y+celda, x+celda/2, y+2*celda/3, x, y+celda, fill=color)
     elif angulo == 180:
-        canvas.create_polygon(x+celda, y, x, y+celda/2, x+celda, y+celda, x+2*celda/3, y+celda/2, fill=color)
+        drawbot = canvas.create_polygon(x+celda, y, x, y+celda/2, x+celda, y+celda, x+2*celda/3, y+celda/2, fill=color)
     elif angulo == 270:
-        canvas.create_polygon(x+celda/2, y+celda, x+celda, y, x+celda/2, y+celda/3, x, y, fill=color)
+        drawbot = canvas.create_polygon(x+celda/2, y+celda, x+celda, y, x+celda/2, y+celda/3, x, y, fill=color)
 
 def recibirInput(event):
-    global entrada
-    entrada = re.split(r" |\(|, " ,cajaInput.get())
-    global t
+    global entrada, t, token, display
+    input = cajaInput.get()
+    input = re.sub(r"\(", "( ", input)
+    input = re.sub(r"\)", " )", input)
+    entrada = re.split(r"\s+", input)
     t = 0
-    global token
     token = entrada[t]
-    comando()
+    try:
+        comando()
+        display.set(input)
+    except Exception as error:
+        display.set(error)
     cajaInput.delete(0, tk.END)
 
 cajaInput = tk.Entry(width=80)  # se crea el cuadro de texto para ingresar comandos
@@ -188,7 +309,12 @@ cajaInput.pack(pady=5)
 
 ventana.bind('<Return>', recibirInput)      # al presionar la tecla Enter, se ejecuta el comando escrito
 
-render(x, y)
+display = tk.StringVar()
+mensaje = tk.Label(textvariable=display)
+mensaje.pack()
+
+drawbot = canvas.create_polygon(x+celda/2, y, x+celda, y+celda, x+celda/2, y+2*celda/3, x, y+celda, fill=color)
+dibujos = []
 ventana.mainloop()
 
 
@@ -206,5 +332,5 @@ ventana.mainloop()
 # <color>  ::= "color " '#' <hex> <hex> <hex> <hex> <hex> <hex>;
 # <limpiar> ::= "limpiar";
 # <centro> ::= "centro";
-# <repetir> ::= "repetir " <int> <comando> {<comando>};
+# <repetir> ::= “repetir ” <int> '(' <comando> {<comando>} ')';
 # <script> ::= "script " '"' {.} '"';
