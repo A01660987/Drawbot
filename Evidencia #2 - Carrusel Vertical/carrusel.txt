@@ -18,3 +18,4 @@
 (("Doxorrubicina" 33 2.4) ("Ciclofosfamida" 53 9.4) ("Vincristina" 83 1.3) ("Vinblastina" 112 6.5) ("Bleomicina" 91 3.6))
 (("Procarbazina" 54 5.6) ("Dacarbazina" 140 6.1) ("Tamoxifeno" 135 3.5) ("Letrozol" 165 9.6) ("Anastrozol" 59 6.6))
 (("Fulvestrant" 169 8.8) ("Leuprorelina" 125 1.5) ("Goserelina" 84 3.3) ("Degarelix" 49 7.5) ("Abiraterona" 71 2.6)))
+"Paracetamol"
