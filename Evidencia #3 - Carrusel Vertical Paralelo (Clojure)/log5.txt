@@ -1,0 +1,13 @@
+Movimiento inválido.
+Producto Lamotrigina no encontrado.
+Producto Atorvastatina no encontrado.
+Movimiento inválido.
+Agregadas 13 unidades de Doxiciclina.
+Producto Albuterol no encontrado.
+("Salbutamol" 237 11.8)
+Producto Fluticasona no encontrado.
+Retiradas 42 unidades de Salbutamol.
+Producto Tamoxifeno no encontrado.
+Retiradas 1 unidades de Salbutamol.
+("Insulina glargina" 200 2.7)
+Productos con menos de 20 unidades: ((("Ranitidina" 8 11.1) ("Amoxicilina" 17 4.0) ("Sertralina" 15 17.2) ("Metoclopramida" 17 7.0)))

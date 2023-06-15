@@ -1,0 +1,1 @@
+((agregar 22) (agregar 16) (a) (c) (a) (retirar 4) (agregar 31 "Esomeprazol") (c) (a) (b) (agregar 4 "Glimepirida") (retirar 48) (d) (c) (b) (d) (a) (a) (agregar 5 "Bevacizumab") (agregar 5) (d) (agregar 44) (a) (retirar 22))

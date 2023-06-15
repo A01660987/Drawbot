@@ -1,0 +1,1 @@
+((retirar 48) (retirar 44) (a) (d) (d) (c) (agregar 43 "Fenofibrato") (a) (agregar 38 "Vincristina") (d) (agregar 13 "Insulina glargina") (a) (agregar 18) (a) (agregar 29 "Ranitidina") (agregar 34) (retirar 29) (b) (b) (agregar 37) (retirar 48))

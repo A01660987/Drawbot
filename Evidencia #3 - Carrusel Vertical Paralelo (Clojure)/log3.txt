@@ -1,0 +1,27 @@
+Agregadas 22 unidades de Tamoxifeno.
+Agregadas 16 unidades de Tamoxifeno.
+("Ketorolaco" 80 12.8)
+Movimiento inválido.
+("Trastuzumab" 170 12.3)
+Retiradas 4 unidades de Trastuzumab.
+Agregadas 31 unidades de Esomeprazol.
+Ruta: adddd
+("Ceftriaxona" 235 8.4)
+("Atorvastatina" 294 6.5)
+("Ceftriaxona" 235 8.4)
+Agregadas 4 unidades de Glimepirida.
+Ruta: ccc
+Retiradas 48 unidades de Glimepirida.
+("Fulvestrant" 33 20.0)
+("Glimepirida" 150 2.6)
+("Trastuzumab" 166 12.3)
+("Ketotifeno" 175 17.0)
+("Fulvestrant" 33 20.0)
+("Bleomicina" 247 9.2)
+Producto Bevacizumab no encontrado.
+Agregadas 5 unidades de Bleomicina.
+("Montelukast" 209 11.4)
+Agregadas 44 unidades de Montelukast.
+("Gabapentina" 4 5.0)
+Se intentaron retirar más de las existencias de Gabapentina.
+Productos con menos de 20 unidades: ((("Ranitidina" 14 17.4) ("Abiraterona" 12 7.9) ("Gabapentina" 0 5.0) ("Doxiciclina" 19 7.9)))

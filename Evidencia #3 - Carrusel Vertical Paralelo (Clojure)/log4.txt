@@ -1,0 +1,23 @@
+Retiradas 48 unidades de Doxiciclina.
+Retiradas 44 unidades de Doxiciclina.
+("Famotidina" 114 19.9)
+("Valaciclovir" 250 14.9)
+("Ciclofosfamida" 134 9.6)
+("Valaciclovir" 250 14.9)
+Producto Fenofibrato no encontrado.
+("Loratadina" 137 10.1)
+Producto Vincristina no encontrado.
+("Pregabalina" 157 15.1)
+Producto Insulina glargina no encontrado.
+("Irinotecan" 114 4.5)
+Agregadas 18 unidades de Irinotecan.
+("Amoxicilina" 270 3.8)
+Agregadas 29 unidades de Ranitidina.
+Ruta: bbcc
+Agregadas 34 unidades de Ranitidina.
+Retiradas 29 unidades de Ranitidina.
+("Famotidina" 114 19.9)
+("Doxiciclina" 95 6.3)
+Agregadas 37 unidades de Doxiciclina.
+Retiradas 48 unidades de Doxiciclina.
+Productos con menos de 20 unidades: ((("Infliximab" 0 2.5)))

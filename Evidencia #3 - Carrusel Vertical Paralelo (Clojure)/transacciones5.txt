@@ -1,0 +1,1 @@
+((c) (agregar 47 "Lamotrigina") (agregar 26 "Atorvastatina") (c) (agregar 13) (agregar 10 "Albuterol") (a) (agregar 31 "Fluticasona") (retirar 42) (agregar 7 "Tamoxifeno") (retirar 1) (d))
